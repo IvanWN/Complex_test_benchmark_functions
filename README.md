@@ -1,5 +1,6 @@
 # Benchmarking Metaheuristics
   This repository is a tool for creating a unified register of benchmarks and running metaheuristic functions on them, as well as displaying the results of their work. The task is to conduct a comparative analysis of the performance of metaheuristic algorithms on various benchmark functions.
+  
 - benchmarks/
   - benchmarks.cpp           # Файл с реализацией бенчмарк функций
   - benchmarks.h
@@ -8,6 +9,7 @@
   - ICA.cpp                  # Файл с реализацией метаэвристики ICA
 - main.cpp                   # Основной файл для запуска метаэвристик на бенчмарках
 - README.md                  # Этот файл
+
 Benchmark Functions
   There is a file in the benchmarks folder benchmarks.cpp , which contains implementations of various benchmark functions. In total, 12 benchmark functions are implemented here. Functions provide an interface for calculating their values and can be used to evaluate the performance of metaheuristic algorithms.
 
