@@ -60,14 +60,14 @@ void run_and_evaluate(const string& algorithm_name, AlgorithmFunc algorithm, int
 
 int main() {
     const int num_runs = 30;
-    std::vector<std::pair<double, double>> search_space(20, {-10.0, 10.0});  // For now using a sample dimension of 20 for all functions
+    std::vector<std::pair<double, double>> search_space(20, {-10.0, 10.0});
 
     run_and_evaluate("SSA", [&search_space](auto benchmark_function) {
         return ssa(100, 3000, search_space, benchmark_function);
     }, num_runs, search_space);
 
     run_and_evaluate("ICA", [&search_space](auto benchmark_function) {
-        return ica(100, 3000, search_space, 10, benchmark_function);  // 3 is a placeholder for num_empires, you can change it.
+        return ica(100, 3000, search_space, 10, benchmark_function);
     }, num_runs, search_space);
 
     return 0;
