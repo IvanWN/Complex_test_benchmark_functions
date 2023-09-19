@@ -10,24 +10,37 @@
 #include "ICA.cpp"
 #include "benchmarks.h"
 
-
 using namespace std;
-
-double mean(const std::vector<double>& values) {
-    return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
-}
-
-double stddev(const std::vector<double>& values, double mean_val) {
-    double variance = std::accumulate(values.begin(), values.end(), 0.0, [mean_val](double acc, double val) {
-        return acc + (val - mean_val) * (val - mean_val);
-    }) / values.size();
-    return std::sqrt(variance);
-}
 
 template <typename AlgorithmFunc>
 void run_and_evaluate(const string& algorithm_name, AlgorithmFunc algorithm, int num_runs, const std::vector<std::pair<double, double>>& search_space) {
     std::vector<double (*)(const std::vector<double>&)> benchmark_functions = {f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12};
     std::vector<std::string> function_names = {"f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8", "f9", "f10", "f11", "f12"};
+
+    double (*mean_function)(const std::vector<double>&);
+    double (*stddev_function)(const std::vector<double>&, double);
+
+    // Select appropriate functions based on algorithm_name
+    if (algorithm_name == "ICA") {
+        mean_function = [](const std::vector<double>& vec) {
+            return std::accumulate(vec.begin(), vec.end(), 0.0) / vec.size();
+        };
+        stddev_function = [](const std::vector<double>& vec, double mean_val) {
+            double sq_sum = std::inner_product(vec.begin(), vec.end(), vec.begin(), 0.0);
+            double sq_mean = sq_sum / vec.size();
+            return std::sqrt(sq_mean - mean_val * mean_val);
+        };
+    } else { // Assume "SSA" by default
+        mean_function = [](const std::vector<double>& values) {
+            return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
+        };
+        stddev_function = [](const std::vector<double>& values, double mean_val) {
+            double variance = std::accumulate(values.begin(), values.end(), 0.0, [mean_val](double acc, double val) {
+                return acc + (val - mean_val) * (val - mean_val);
+            }) / values.size();
+            return std::sqrt(variance);
+        };
+    }
 
     for (size_t func_idx = 0; func_idx < benchmark_functions.size(); ++func_idx) {
         auto& benchmark_function = benchmark_functions[func_idx];
@@ -44,9 +57,9 @@ void run_and_evaluate(const string& algorithm_name, AlgorithmFunc algorithm, int
             run_times.push_back(run_time.count());
         }
 
-        double mean_fitness = mean(fitness_results);
-        double fitness_std_dev = stddev(fitness_results, mean_fitness);
-        double mean_run_time = mean(run_times);
+        double mean_fitness = mean_function(fitness_results);
+        double fitness_std_dev = stddev_function(fitness_results, mean_fitness);
+        double mean_run_time = mean_function(run_times);
 
         // Display results for each benchmark function
         std::cout << "Algorithm: " << algorithm_name << " | Benchmark function: " << function_names[func_idx] << std::endl;
