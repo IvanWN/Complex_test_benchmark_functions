@@ -8,6 +8,8 @@
 // Including files
 #include "SSA.cpp"
 #include "ICA.cpp"
+#include "TLBO.cpp"
+#include "SCA.cpp"
 #include "benchmarks.h"
 
 using namespace std;
@@ -30,7 +32,7 @@ void run_and_evaluate(const string& algorithm_name, AlgorithmFunc algorithm, int
             double sq_mean = sq_sum / vec.size();
             return std::sqrt(sq_mean - mean_val * mean_val);
         };
-    } else { // Assume "SSA" by default
+    } else {
         mean_function = [](const std::vector<double>& values) {
             return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
         };
@@ -81,6 +83,14 @@ int main() {
 
     run_and_evaluate("ICA", [&search_space](auto benchmark_function) {
         return ica(100, 3000, search_space, 10, benchmark_function);
+    }, num_runs, search_space);
+
+    run_and_evaluate("TLBO", [&search_space](auto benchmark_function) {
+        return tlbo(100, 3000, search_space, benchmark_function);
+    }, num_runs, search_space);
+
+    run_and_evaluate("SCA", [&search_space](auto benchmark_function) {
+        return sca(100, 3000, search_space, benchmark_function);
     }, num_runs, search_space);
 
     return 0;
