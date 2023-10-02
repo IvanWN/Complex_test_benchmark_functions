@@ -11,6 +11,7 @@
 #include "TLBO.cpp"
 #include "SCA.cpp"
 #include "AOA.cpp"
+#include "WOA.cpp"
 #include "benchmarks.h"
 
 using namespace std;
