@@ -10,6 +10,7 @@
 #include "ICA.cpp"
 #include "TLBO.cpp"
 #include "SCA.cpp"
+#include "AOA.cpp"
 #include "benchmarks.h"
 
 using namespace std;
@@ -91,6 +92,10 @@ int main() {
 
     run_and_evaluate("SCA", [&search_space](auto benchmark_function) {
         return sca(100, 3000, search_space, benchmark_function);
+    }, num_runs, search_space);
+
+    run_and_evaluate("AOA", [&search_space](auto benchmark_function) {
+        return aoa(100, 3000, search_space, benchmark_function);
     }, num_runs, search_space);
 
     return 0;
