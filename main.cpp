@@ -17,15 +17,18 @@
 
 using namespace std;
 
+// Structure for storing the configuration of benchmarks
 struct BenchmarkConfig {
-    double (*benchmark_func)(const std::vector<double>&);
-    std::vector<std::pair<double, double>> search_space;
+    double (*benchmark_func)(const std::vector<double>&); // Evaluation function (benchmark)
+    std::vector<std::pair<double, double>> search_space; // Search space (boundaries)
 };
 
+// Template function for executing and evaluating algorithms
 template <typename AlgorithmFunc>
 vector<vector<double>> run_and_evaluate(const string& algorithm_name, AlgorithmFunc algorithm, int num_runs, const std::vector<BenchmarkConfig>& configs) {
     std::vector<vector<double>> all_results(configs.size(), vector<double>(3, 0.0));
-
+    
+    // Functions for calculating the mean and standard deviation
     double (*mean_function)(const std::vector<double>&) = [](const std::vector<double>& values) {
         return std::accumulate(values.begin(), values.end(), 0.0) / values.size();
     };
@@ -35,7 +38,8 @@ vector<vector<double>> run_and_evaluate(const string& algorithm_name, AlgorithmF
         }) / values.size();
         return std::sqrt(variance);
     };
-
+    
+    // Main loop for running algorithms and collecting results
     for (size_t config_idx = 0; config_idx < configs.size(); ++config_idx) {
         auto& benchmark_function = configs[config_idx].benchmark_func;
         auto& search_space = configs[config_idx].search_space;
@@ -52,6 +56,7 @@ vector<vector<double>> run_and_evaluate(const string& algorithm_name, AlgorithmF
             fitness_results.push_back(fitness);
             run_times.push_back(run_time.count());
         }
+        // Calculation of average, standard deviation and average execution time
         all_results[config_idx][0] = mean_function(fitness_results);
         all_results[config_idx][1] = stddev_function(fitness_results, all_results[config_idx][0]);
         all_results[config_idx][2] = mean_function(run_times);
