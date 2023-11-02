@@ -43,7 +43,7 @@ std::pair<std::vector<double>, double> ica(int num_agents, int max_iter, const s
         colony_fitness[i] = fitness[sorted_indices[i + num_empires]];
     }
 
-    // Инициализация адаптивных скоростей обучения и коэффициентов ассимиляции
+    // Initialization of adaptive learning rates and assimilation coefficients
     double learning_rate_init = 0.5;
     double learning_rate_final = 0.01;
     double assimilation_coeff_init = 0.5;
@@ -53,7 +53,7 @@ std::pair<std::vector<double>, double> ica(int num_agents, int max_iter, const s
         double assimilation_coeff = assimilation_coeff_init - (assimilation_coeff_init - assimilation_coeff_final) * static_cast<double>(t) / max_iter;
         double learning_rate = learning_rate_init - (learning_rate_init - learning_rate_final) * static_cast<double>(t) / max_iter;
 
-        // Осуществляем скрещивание между империями
+        // We are crossing between empires
         for (int i = 0; i < num_empires; ++i) {
             if (static_cast<double>(std::rand()) / RAND_MAX < 0.5) {
                 int other = std::rand() % num_empires;
@@ -69,21 +69,21 @@ std::pair<std::vector<double>, double> ica(int num_agents, int max_iter, const s
             }
         }
 
-        // Обновление позиций колоний на основе их соответствующих империй
+        // Updating colony positions based on their respective empires
         for (int i = 0; i < colonies.size(); ++i) {
             for (int j = 0; j < num_dimensions; ++j) {
                 colonies[i][j] -= learning_rate * assimilation_coeff * (colonies[i][j] - empires[i % num_empires][j]);
             }
         }
-
-        // Осуществляем революцию, внося случайные возмущения
+      
+        // A revolution is being carried out by introducing random disturbances
         for (int i = 0; i < colonies.size(); ++i) {
             for (int j = 0; j < num_dimensions; ++j) {
                 colonies[i][j] += 0.2 * static_cast<double>(rand()) / RAND_MAX;
             }
         }
 
-        // Обновление приспособленности всех агентов
+        // Updating the fitness of all agents
         for (int i = 0; i < num_empires; ++i) {
             empire_fitness[i] = benchmark_function(empires[i]);
         }
@@ -91,7 +91,7 @@ std::pair<std::vector<double>, double> ica(int num_agents, int max_iter, const s
             colony_fitness[i] = benchmark_function(colonies[i]);
         }
 
-        // Поиск лучшей империи
+        // Search for a Better Empire
         int best_index = std::distance(empire_fitness.begin(), std::min_element(empire_fitness.begin(), empire_fitness.end()));
         auto best_agent = empires[best_index];
         double best_fitness = empire_fitness[best_index];
